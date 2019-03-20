@@ -32,14 +32,13 @@ class ExperimentalScratchpad(unittest.TestCase):
     def test_handoff_to_specialists(self):
         self.company.recieve_message('w_nabellen_incomplete_dossiers_scheduled')
         self.clock.tick(2)
-        self.assertTrue('w_valideren_aanvraag_complete' in map(lambda x: x[1], action_log))
+        self.assertTrue('w_valideren_aanvraag_complete' in [event[1].lower() for event_sequence in action_log
+                                                                             for event in event_sequence])
 
-    def test_plenty_of_activities(self):
-        [self.company.recieve_message('a_submitted') for _ in range(10)]  # Lots of work
-        self.clock.tick(400)  # Lots of time
-
-
-        self.assertTrue('end' in map(lambda x: x[1], action_log))
+    # def test_plenty_of_activities(self):
+    #     [self.company.recieve_message('a_submitted') for _ in range(10)]  # Lots of work
+    #     self.clock.tick(400)  # Lots of time
+    #     self.assertTrue('end' in map(lambda x: x[1], action_log))
 
 
 
