@@ -18,7 +18,8 @@ def log_activity(func):
         # 1. agent name comes from arg[0] being the agent the method relates to.
         # 2. How do I pick up the trace? Maybe tag each task _object_ with its trace, so I can pick it up here?
         action_log[-1].append((args[0].actor_name, func.func_name))
-        func(*args, **kwargs)
+        return func(*args, **kwargs)
+    logged_func.func_name = func.func_name
     return logged_func
 
 
