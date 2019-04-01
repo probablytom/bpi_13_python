@@ -35,13 +35,6 @@ class ExperimentalScratchpad(unittest.TestCase):
         self.assertTrue('w_valideren_aanvraag_complete' in [event[1].lower() for event_sequence in action_log
                                                             for event in event_sequence])
 
-    def test_plenty_of_activities(self):
-        [self.company.recieve_message('a_submitted') for _ in range(10)]  # Lots of work
-        self.clock.tick(400)  # Lots of time
-
-
-        self.assertTrue('end' in map(lambda x: x[1], action_log))
-
 
 
 class TestExperimentsMakeXES(unittest.TestCase):
