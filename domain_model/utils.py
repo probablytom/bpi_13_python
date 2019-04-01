@@ -1,7 +1,13 @@
 import xes
 
-
+# Format: [[(actor name, method name)*]]
 action_log = [[]]
+
+skip_log = False
+
+def set_skip_log(val):
+    global skip_log
+    skip_log = val
 
 def new_trace():
     action_log.append([])
@@ -17,7 +23,11 @@ def log_activity(func):
         # For XES stuff:
         # 1. agent name comes from arg[0] being the agent the method relates to.
         # 2. How do I pick up the trace? Maybe tag each task _object_ with its trace, so I can pick it up here?
-        action_log[-1].append((args[0].actor_name, func.func_name))
+        global skip_log
+        if not skip_log:
+            action_log[-1].append((args[0].actor_name, func.func_name))
+
+        skip_log = False
         return func(*args, **kwargs)
     logged_func.func_name = func.func_name
     return logged_func

@@ -33,10 +33,10 @@ def sync(funcs, next_step, signals=[]):
     regardless of their execution order, they'll synchronise back to another function which won't continue until it's
     finished.
     TODO: move to actor_au?
-    sync :: [(func, capable_troupe)] -> func -> [] -> [func]
-    :param funcs: List of Functions to synchronise.
-    :param post_join: The function that should execute on joining the synced tasks.
-    :return:
+    sync :: [(str, capable_troupe)] -> str -> [] -> [func]
+    :param funcs: List of strings representing methods to synchronise.
+    :param post_join: A string representing the method that should execute on joining the synced tasks.
+    :return: A list of partial functions scheduling the synchronised tasks.
     '''
 
     def synchronise(joiner, func, troupe):
@@ -79,7 +79,7 @@ class BPI13Flow(object):
     @task(cost=1)
     def START(self):
         possible_paths = [
-            self.A_submitted
+            'a_submitted'
         ]
 
         # Make a random choice out of possible future paths
@@ -244,8 +244,8 @@ class BPI13Flow(object):
 
         possible_paths = []
 
-        synchronous_possible_paths = [self.A_finalised,
-                                      self.O_selected]
+        synchronous_possible_paths = ['a_finalised',
+                                      'o_selected']
 
         path_options_with_troupes = zip(synchronous_possible_paths,
                                         [bpi13_actors.Company for _ in synchronous_possible_paths])
@@ -498,7 +498,22 @@ class SimulationActor(PatternMatchingActor):
 
         self.idle = taskIdle
 
-class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow):
+
+class RuntimeTaskMessageLookup(dict):
+    def __getitem__(self, item, default=None):
+        for attr in dir(self.target):
+            if item == attr.lower():
+                return getattr(self.target, attr)
+        return default
+
+    def get(self, k, default=None):
+        return self.__getitem__(k, default)
+
+    def __init__(self, target):
+        self.target = target
+
+
+class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow, RuntimeTaskMessageLookup):
 
     count_customer_service_actors = 0
 
@@ -509,10 +524,10 @@ class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow):
         super(CustomerServiceActor, self).__init__()
 
         # blanket recognise a _lower case_ method name as a request to call that method
-        self.message_patterns.update( { name.lower(): self.__getattribute__(name) for name in dir(self) } )
+        self.message_patterns = RuntimeTaskMessageLookup(self)
 
 
-class SpecialistActor(SimulationActor, SpecialistWorkflow):
+class SpecialistActor(SimulationActor, SpecialistWorkflow, RuntimeTaskMessageLookup):
 
     count_specialist_actors = 0
 
@@ -524,5 +539,5 @@ class SpecialistActor(SimulationActor, SpecialistWorkflow):
         super(SpecialistActor, self).__init__()
 
         # blanket recognise a _lower case_ method name as a request to call that method
-        self.message_patterns.update( { name.lower(): self.__getattribute__(name) for name in dir(self) } )
+        self.message_patterns = RuntimeTaskMessageLookup(self)
 
