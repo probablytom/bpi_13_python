@@ -3,8 +3,6 @@ from drawer import AdviceBuilder, weave_clazz, prelude
 from functools import partial
 from domain_model import CustomerServiceWorkflow, SpecialistWorkflow, construct_universe, Clock, Troupe, set_skip_log, action_log
 from pydysofu import set_fuzzer
-from random import choice
-from types import UnboundMethodType
 
 
 def counting_encore(state, attribute, context, result):
