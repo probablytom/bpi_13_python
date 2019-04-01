@@ -11,25 +11,6 @@ def counting_encore(state, attribute, context, result):
     state['invocations'] += 1
 
 
-class Target(object):
-    def foo(self):
-        return self
-
-
-class TestFuzzingAppliesProperly(TestCase):
-    def test_fuzzing_application(self):
-        state = {'invocations': 0}
-        advice = AdviceBuilder()
-
-        encore = partial(counting_encore, state)
-        advice.add_encore(Target.foo, encore)
-        advice.apply()
-
-        Target().foo().foo().foo()
-
-        self.assertEqual(state['invocations'], 3)
-
-
 class TestFuzzingAppliesToModel(TestCase):
 
     def setUp(self):

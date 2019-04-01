@@ -513,7 +513,7 @@ class RuntimeTaskMessageLookup(dict):
         self.target = target
 
 
-class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow, RuntimeTaskMessageLookup):
+class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow):
 
     count_customer_service_actors = 0
 
@@ -527,7 +527,7 @@ class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow, RuntimeTask
         self.message_patterns = RuntimeTaskMessageLookup(self)
 
 
-class SpecialistActor(SimulationActor, SpecialistWorkflow, RuntimeTaskMessageLookup):
+class SpecialistActor(SimulationActor, SpecialistWorkflow):
 
     count_specialist_actors = 0
 
