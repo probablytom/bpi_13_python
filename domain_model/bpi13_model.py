@@ -4,6 +4,7 @@ from theatre_au import task
 from actor_au import PatternMatchingActor
 from utils import log_activity
 from pydysofu import fuzz
+from inspect import ismethod
 import bpi13_actors
 
 
@@ -411,7 +412,8 @@ class CustomerServiceWorkflow(BPI13Flow):
     '''
     The standard actor class.
     '''
-    pass
+    def __init__(self):
+        super(CustomerServiceWorkflow, self).__init__()
 
 
 class SpecialistWorkflow(BPI13Flow):
@@ -420,6 +422,9 @@ class SpecialistWorkflow(BPI13Flow):
     TODO: should CustomerServiceActors have these too, so that some of the variance in our model can be unauthorised
     people performing these actions?
     '''
+
+    def __init__(self):
+        super(SpecialistWorkflow, self).__init__()
 
     @task(cost=1)
     @log_activity
@@ -526,6 +531,8 @@ class CustomerServiceActor(SimulationActor, CustomerServiceWorkflow):
         # blanket recognise a _lower case_ method name as a request to call that method
         self.message_patterns = RuntimeTaskMessageLookup(self)
 
+        self._learning_rate = 0.01  # Wang '19
+
 
 class SpecialistActor(SimulationActor, SpecialistWorkflow):
 
@@ -541,3 +548,4 @@ class SpecialistActor(SimulationActor, SpecialistWorkflow):
         # blanket recognise a _lower case_ method name as a request to call that method
         self.message_patterns = RuntimeTaskMessageLookup(self)
 
+        self._learning_rate = 0.01  # Wang '19
