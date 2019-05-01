@@ -20,7 +20,7 @@ URL = 'http://probablytom.com/'
 EMAIL = 'w.wallis.1@research.gla.ac.uk'
 AUTHOR = 'Tom Wallis'
 REQUIRES_PYTHON = '<3'
-VERSION = '0.1a3'
+VERSION = '0.1a4'
 EXCLUDABLES = ('venv','experiments',)
 
 # What packages are required for this module to be executed?
@@ -28,7 +28,8 @@ REQUIRED = [
     'drawer',
     'theatre_au',
     'actor_au',
-    'pydysofu'
+    'pydysofu',
+    'xes'
 ]
 
 # What packages are optional?
