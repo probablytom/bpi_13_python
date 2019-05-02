@@ -21,7 +21,7 @@ EMAIL = 'w.wallis.1@research.gla.ac.uk'
 AUTHOR = 'Tom Wallis'
 REQUIRES_PYTHON = '<3'
 VERSION = '0.1a4'
-EXCLUDABLES = ('venv','experiments',)
+EXCLUDABLES = ('venv','experiment_tests',)
 
 # What packages are required for this module to be executed?
 REQUIRED = [

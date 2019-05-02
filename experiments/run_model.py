@@ -42,10 +42,7 @@ def run_model(FuzzerClass,
     (This might be a change to the Troupe, if they pick up work randomly, or a change to
     how I deploy the messages otherwise.)
     '''
-    # [company.recieve_message('start') for _ in range(num_start_messages)]
-    # clock.tick(num_ticks)
-    company.recieve_message('start')
-    clock.tick(100)
+    [company.recieve_message('start') for _ in range(num_start_messages)]
+    clock.tick(num_ticks)
 
     generate_XES(log_path=outputfile)
-

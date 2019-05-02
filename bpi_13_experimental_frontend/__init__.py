@@ -1,2 +1,5 @@
 from run_model import *
-from domain_model import skip_log as skip_current_action
+
+def skip_current_action():
+    from domain_model import set_skip_log
+    set_skip_log(True)
