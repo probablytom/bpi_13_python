@@ -1,11 +1,52 @@
+import bpi13_actors
 from random import choice
 from functools import partial
 from theatre_au import task
 from actor_au import PatternMatchingActor
 from utils import log_activity
 from pydysofu import fuzz
-from inspect import ismethod
-import bpi13_actors
+
+
+# adjacencies = {
+#     'start': ['a_submitted'],
+#     'end': ['end'],
+#     'a_submitted': ['a_partlysubmitted'],
+#     'a_partlysubmitted': ['w_beoordelen_fraude_schedule', 'w_afhandelen_leads_schedule', 'a_preaccepted'],
+#     'w_beoordelen_fraude_schedule': ['w_beoordelen_fraude_start'],
+#     'w_beoordelen_fraude_start': ['w_beoordelen_fraude_complete'],  # todo finish
+#     'w_beoordelen_fraude_complete': [],
+#     'a_declined': [],
+#     'w_afhandelen_leads_schedule': [],
+#     'w_afhandelen_leads_start': [],
+#     'w_afhandelen_leads_complete': [],
+#     'a_preaccepted': [],
+#     'w_completeven_aanvraag_scheduled': [],
+#     'w_completeven_aanvraag_start': [],
+#     'w_completeven_aanvraag_complete': [],
+#     'w_wijzigen_contractgegevens_schedule': [],
+#     'a_accepted': [],
+#     'a_finalised': [],
+#     'a_cancelled': [],
+#     'o_selected': [],
+#     'o_created': [],
+#     'o_sent': [],
+#     'o_cancelled': [],
+#     'o_sent_back': [],
+#     'w_nabellen_offertes_scheduled': [],
+#     'w_nabellen_offertes_start': [],
+#     'w_nabellen_offertes_complete': [],
+#     'w_valideren_aanvraag_scheduled': [],
+#     'w_nabellen_incomplete_dossiers_scheduled': [],
+#     'w_nabellen_incomplete_dossiers_start': [],
+#     'w_nabellen_incomplete_dossiers_complete': [],
+#     'w_valideren_aanvraag_start': [],
+#     'w_valideren_aanvraag_complete': [],
+#     'o_declined': [],
+#     'o_accepted': [],
+#     'a_approved': [],
+#     'a_activated': [],
+#     'a_registered': [],
+# }
 
 
 def schedule_all(task_list, actor):

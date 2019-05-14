@@ -33,6 +33,19 @@ def log_activity(func):
     return logged_func
 
 
+def manually_log(func, actor):
+    '''
+    Manually add something to an activity log.
+    :param func: A function representing work which needs to be logged.
+    :param actor:
+    :return:
+    '''
+    global skip_log
+    if not skip_log:
+        action_log[-1].append((actor.actor_name, func.func_name))
+    skip_log = False
+
+
 # 3. Function for outputting an XES log
 def generate_XES(traces=None, log_path='log.xes'):
     # Borrow from the XES example at https://github.com/maxsumrall/xes
