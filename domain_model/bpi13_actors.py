@@ -1,12 +1,11 @@
-from actor_au import PatternMatchingActor, Troupe
+from actor_au import Troupe
 from theatre_au import Clock
 import bpi13_model
 
 CustomerServiceReps = Troupe()
 SpecialistDepartment = Troupe()
 Company = Troupe()
-old_man_time = Troupe()
-
+old_man_time = Clock()
 
 def set_up_new_actor(actor_type, associated_group):
     new_rep = actor_type()
@@ -36,6 +35,7 @@ def construct_bpi_simulation(num_ordinary_customer_service_reps=3,
     for actor_type, message_group, count in types_and_groups:
         for _ in range(count):
             set_up_new_actor(actor_type, message_group)
+
 
 def construct_universe(clock=Clock(),
                        specialist_troupe=Troupe(),

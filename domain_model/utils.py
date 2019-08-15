@@ -1,16 +1,35 @@
 import xes
+from copy import copy
 
 # Format: [[(actor name, method name)*]]
 action_log = [[]]
+experimental_environment = dict()
 
 skip_log = False
+verbose_logs = True
+
 
 def set_skip_log(val):
     global skip_log
     skip_log = val
 
+
 def new_trace():
     action_log.append([])
+
+    if 'fuzzed tasks' not in experimental_environment.keys():
+        experimental_environment['fuzzed tasks'] = [[]]
+    else:
+        experimental_environment['fuzzed tasks'].append([])
+
+
+def log_fuzz(fuzz_type, fuzzed_task_name, actor="unknown actor name"):
+    if 'fuzzed tasks' not in experimental_environment.keys():
+        experimental_environment['fuzzed tasks'] = [[]]
+    experimental_environment['fuzzed tasks'][-1].append((str(len(experimental_environment['fuzzed tasks'])),
+                                                         fuzz_type,
+                                                         fuzzed_task_name,
+                                                         actor))
 
 
 def log_activity(func):
@@ -25,7 +44,16 @@ def log_activity(func):
         # 2. How do I pick up the trace? Maybe tag each task _object_ with its trace, so I can pick it up here?
         global skip_log
         if not skip_log:
-            action_log[-1].append((args[0].actor_name, func.func_name))
+            if verbose_logs:
+                CustomerServiceWorkflow = __import__("domain_model").CustomerServiceWorkflow
+                new_entry = (args[0].actor_name,
+                             func.func_name,
+                             "specialist" if func.func_name not in dir(CustomerServiceWorkflow) else "any",
+                             args[0].__class__.__name__)
+            else:
+                new_entry = (args[0].actor_name,
+                             func.func_name)
+            action_log[-1].append(new_entry)
 
         skip_log = False
         return func(*args, **kwargs)
@@ -47,9 +75,13 @@ def manually_log(func, actor):
 
 
 # 3. Function for outputting an XES log
-def generate_XES(traces=None, log_path='log.xes'):
+def generate_XES(events=None, log_path='log.xes'):
     # Borrow from the XES example at https://github.com/maxsumrall/xes
     log = xes.Log()
+
+    global action_log
+    if events is None:
+        events = copy(action_log)
 
     def makeEvent(logged_event):
         event = xes.Event()
@@ -63,10 +95,22 @@ def generate_XES(traces=None, log_path='log.xes'):
                                           value=logged_event[0])
                             ]
 
+        if len(logged_event) == 4:
+            event.attributes.append(xes.Attribute(type="string",
+                                                  key="concept:required_privileges_for_action",
+                                                  value=logged_event[2]))
+            event.attributes.append(xes.Attribute(type="string",
+                                                  key="concept:actor_class",
+                                                  value=logged_event[3]))
+
         return event
 
-    for event_set in action_log:
+    for ev_index in range(len(events)):
+        event_set = events[ev_index]
         trace = xes.Trace()
+        trace.add_attribute(xes.Attribute(type="int",
+                                          key="trace_id",
+                                          value=str(ev_index+1)))
         [trace.add_event(makeEvent(logged_event)) for logged_event in event_set]
         log.add_trace(trace)
 
@@ -79,3 +123,15 @@ def generate_XES(traces=None, log_path='log.xes'):
 
     with open(log_path, 'w') as log_file:
         log_file.write(str(log))
+
+
+def generate_CSV(csv_path='log.csv'):
+    with open(csv_path, 'w') as csv_file:
+        # Write header
+        csv_file.write("Trace ID,Modification Type,Modified Task,Actor Involved\n")
+
+        # For every invocation, for every task modified, log the modification
+        for fuzzing_invocations in experimental_environment['fuzzed tasks']:
+            for invocation in fuzzing_invocations:
+                line = ','.join(invocation)
+                csv_file.write(line + "\n")
