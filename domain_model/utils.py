@@ -19,7 +19,6 @@ def reset_traces():
     action_log = [[]]
     experimental_environment.__delitem__("fuzzed tasks")
 
-
 def new_trace():
     action_log.append([])
 

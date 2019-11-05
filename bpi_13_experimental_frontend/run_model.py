@@ -82,7 +82,6 @@ def run_model_advanced_aspect_application(class_identifier_tuple,  # Format (Fuz
 
         advice_to_apply = FuzzerClass(*args, **kwargs)
 
-
         def apply_to_customer_service_workers():
             advice_dict = dict()
             forbidden = ['START', 'END']
@@ -139,5 +138,4 @@ def run_model_advanced_aspect_application(class_identifier_tuple,  # Format (Fuz
 
 
     [company.recieve_message('start') for _ in range(num_start_messages)]
-    # clock.tick(num_ticks)
     old_man_time.tick(num_ticks)
